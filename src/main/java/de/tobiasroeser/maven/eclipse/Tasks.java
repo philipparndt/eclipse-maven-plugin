@@ -137,12 +137,16 @@ public class Tasks {
 			boolean test,
 			final List<String> includes, final List<String> excludes) {
 
+		
 		String normalizedPath;
 		if ("src".equals(kind)) {
 			normalizedPath = relativePath(path);
 		} else {
 			normalizedPath = path;
 		}
+		
+		boolean generated = (normalizedPath.startsWith("target/generated-"));
+		log.foreach(l -> l.debug("ClasspathEntry: " + normalizedPath + (generated ? " (generated)" : "")));
 
 		printStream.print("\t<classpathentry kind=\"" + kind + "\" path=\"" + normalizedPath + "\"");
 		if (!includes.isEmpty()) {
@@ -163,6 +167,9 @@ public class Tasks {
 		}
 		if(test) {
 		    printStream.println("\t\t\t<attribute name=\"test\" value=\"true\"/>");
+		}
+		if(generated) {
+		    printStream.println("\t\t\t<attribute name=\"ignore_optional_problems\" value=\"true\"/>");
 		}
 		printStream.println("\t\t\t<attribute name=\"maven.pomderived\" value=\"true\"/>");
 		printStream.println("\t\t</attributes>");
